@@ -2,8 +2,6 @@
 
 Dashboard en tiempo real de la misión Artemis II. Los datos de telemetría vienen directo de la API de JPL Horizons — la misma que usan astrónomos y equipos de misión. No hay datos simulados ni scraping; es un query real a la efeméride oficial de la NASA.
 
-El frontend tiene un chat con IA (Claude) que recibe la telemetría actual como contexto en cada mensaje, así que las respuestas reflejan la posición real de Orion en ese momento.
-
 ---
 
 ## Stack
@@ -13,7 +11,6 @@ El frontend tiene un chat con IA (Claude) que recibe la telemetría actual como 
 | Backend | Node.js puro (sin Express, sin dependencias externas) |
 | Frontend | React 18 + Vite |
 | Telemetría | NASA/JPL Horizons API (gratuita, sin API key) |
-| IA | Anthropic Claude API |
 
 ---
 
@@ -29,7 +26,6 @@ El frontend tiene un chat con IA (Claude) que recibe la telemetría actual como 
 - **Comparación con Apollo 17** al mismo Mission Elapsed Time
 - **Speedómetro** comparando la velocidad de Orion vs F1, avión comercial y bala
 - **Diámetro angular de la Tierra** visto desde la cápsula, con simulación visual
-- **Chat de IA** con acceso a la telemetría en vivo como contexto
 
 ---
 
@@ -38,22 +34,13 @@ El frontend tiene un chat con IA (Claude) que recibe la telemetría actual como 
 ### Requisitos
 
 - Node.js v18 o superior
-- Una API key de Anthropic (free tier alcanza para el demo)
 
 ### Instalación
 
 ```bash
-git clone <repo>
+git clone https://github.com/marottiFrancisco/artemis-ii-dashboard.git
 cd artemis-ii-dashboard
 npm install
-```
-
-### Variables de entorno
-
-Crear un archivo `.env` en la raíz del proyecto:
-
-```
-VITE_ANTHROPIC_KEY=sk-ant-...
 ```
 
 ### Correrlo
@@ -99,11 +86,10 @@ El backend cachea la respuesta 30 segundos para no saturar la API de JPL.
 
 ```
 artemis-ii-dashboard/
-├── server.js          # Backend: proxy JPL Horizons + proxy Claude API
+├── server.js          # Backend: consulta JPL Horizons y sirve la telemetría
 ├── package.json
 ├── vite.config.js
 ├── index.html
-├── .env               # API key (no commitear)
 └── src/
     ├── main.jsx
     └── App.jsx        # Todo el frontend: componentes, lógica, estilos inline
@@ -115,7 +101,6 @@ artemis-ii-dashboard/
 
 - La API de JPL Horizons es pública y gratuita, sin límite de requests documentado. No requiere API key.
 - El ID `-1024` corresponde a Artemis II (Orion spacecraft). JPL carga las efemérides oficiales de la NASA cuando se confirma la trayectoria de una misión.
-- Las llamadas a Claude se hacen desde el backend (no desde el browser) para evitar exponer la API key en el cliente.
 - El frontend no tiene dependencias más allá de React. Todos los estilos son inline.
 
 ---
