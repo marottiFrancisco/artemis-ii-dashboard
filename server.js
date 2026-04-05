@@ -1,7 +1,13 @@
 import http from "http";
 import https from "https";
+import fs from "fs";
+import path from "path";
 import { parse as parseUrl } from "url";
-const PORT = 3001;
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PORT = process.env.PORT || 3001;
+const DIST = path.join(__dirname, "dist");
 
 let cache = { data: null, timestamp: 0 };
 const CACHE_TTL = 30000;
@@ -181,8 +187,26 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ status: "ok", service: "Artemis II Telemetry Backend" }));
 
   } else {
-    res.writeHead(404);
-    res.end("Not found");
+    // servir el frontend compilado (producción)
+    const ext = path.extname(pathname);
+    const mimeTypes = {
+      ".html": "text/html", ".js": "application/javascript",
+      ".css": "text/css",   ".svg": "image/svg+xml",
+      ".ico": "image/x-icon", ".png": "image/png",
+    };
+    const filePath = ext
+      ? path.join(DIST, pathname)
+      : path.join(DIST, "index.html");
+
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        res.end("Not found");
+        return;
+      }
+      res.writeHead(200, { "Content-Type": mimeTypes[ext] || "text/plain" });
+      res.end(data);
+    });
   }
 });
 

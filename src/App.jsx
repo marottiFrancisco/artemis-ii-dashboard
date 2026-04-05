@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const API = "http://localhost:3001";
+const API = import.meta.env.DEV ? "http://localhost:3001" : "";
 const LAUNCH_TIME = new Date("2026-04-01T22:35:12Z").getTime();
 
 function formatDuration(days) {
