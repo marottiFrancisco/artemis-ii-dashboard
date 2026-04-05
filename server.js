@@ -198,13 +198,14 @@ const server = http.createServer(async (req, res) => {
       ? path.join(DIST, pathname)
       : path.join(DIST, "index.html");
 
+    const contentType = ext ? (mimeTypes[ext] || "text/plain") : "text/html";
     fs.readFile(filePath, (err, data) => {
       if (err) {
         res.writeHead(404);
         res.end("Not found");
         return;
       }
-      res.writeHead(200, { "Content-Type": mimeTypes[ext] || "text/plain" });
+      res.writeHead(200, { "Content-Type": contentType });
       res.end(data);
     });
   }
